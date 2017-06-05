@@ -2,24 +2,20 @@ package logging;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-
 import resourceframework.GlobalResourceProvider;
 import resourceframework.ResourceProviderException;
 
 /**
  * This abstract class implements a framework to print messages into a logfile.
- * The implementation of this class must specify the name of the logfile.
+ * The implementation of this class must specify the name of the logfile. <br>
+ * <br>
+ * Subclasses have to implement a getInstance() method.
  * 
  * @author roland
  *
@@ -45,7 +41,7 @@ public abstract class AbstractLogger {
 			e.printStackTrace();
 			filePath = "";
 		} finally {
-			subFolder = filePath + File.pathSeparator + name;
+			subFolder = filePath + File.separator + name;
 		}
 	}
 
@@ -87,7 +83,8 @@ public abstract class AbstractLogger {
 			}
 		}
 
-		// Logfiledirectory doesn't exist, so we create it if the parentdirectory exists.
+		// Logfiledirectory doesn't exist, so we create it if the
+		// parentdirectory exists.
 		File parentDirectory = new File(filePath);
 
 		if (!parentDirectory.exists()) {
@@ -95,10 +92,10 @@ public abstract class AbstractLogger {
 		}
 
 		directory.mkdir();
-		return logfile = new File(directory.getPath() + File.pathSeparator + currentFileName);
+		return logfile = new File(directory.getPath() + File.separator + currentFileName);
 	}
 
-	private void printToFile(String message) {
+	private String printToFile(String message) {
 		Date date = new Date(System.currentTimeMillis());
 		SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 
@@ -106,13 +103,19 @@ public abstract class AbstractLogger {
 				+ System.lineSeparator();
 
 		try {
-			PrintWriter writer = new PrintWriter(getLogfile());
+			FileWriter writer = new FileWriter(getLogfile(), true);
 			writer.append(internalMessage);
 			writer.close();
 		} catch (FileNotFoundException e) {
 			// Wont happen due to previous checks!
 			e.printStackTrace();
+			internalMessage = null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			internalMessage = null;
 		}
+		return internalMessage;
 	}
 
 	/**
@@ -120,9 +123,10 @@ public abstract class AbstractLogger {
 	 * 
 	 * @param message
 	 *            The message to log.
+	 * @return The logged message will be returned. Used for JUnit testing.
 	 */
-	public void logMessage(String message) {
-		printToFile(message);
+	public String logMessage(String message) {
+		return printToFile(message);
 	}
 
 	/**
@@ -130,8 +134,9 @@ public abstract class AbstractLogger {
 	 * 
 	 * @param ex
 	 *            The exception to print.
+	 * @return The logged message will be returned. Used for JUnit testing.
 	 */
-	public void printException(Exception ex) {
+	public String logException(Exception ex) {
 		String message = "";
 
 		if (ex.getMessage() != null && !ex.getMessage().isEmpty()) {
@@ -139,7 +144,7 @@ public abstract class AbstractLogger {
 		}
 
 		message += ex.getStackTrace();
-		printToFile(message);
+		return printToFile(message);
 	}
 
 	/**
@@ -150,14 +155,15 @@ public abstract class AbstractLogger {
 	 *            The message to print.
 	 * @param ex
 	 *            The exception to print.
+	 * @return The logged message will be returned. Used for JUnit testing.
 	 */
-	public void printMessageAndException(String message, Exception ex) {
+	public String logMessageAndException(String message, Exception ex) {
 
 		if (ex.getMessage() != null && !ex.getMessage().isEmpty()) {
-			message += ex.getMessage() + System.lineSeparator();
+			message = message + System.lineSeparator() + ex.getMessage();
 		}
 
-		message += ex.getStackTrace();
-		printToFile(message);
+		message = message + System.lineSeparator() + ex.getStackTrace();
+		return printToFile(message);
 	}
 }
