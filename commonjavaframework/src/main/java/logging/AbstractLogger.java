@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.annotation.Nonnull;
+
 import resourceframework.GlobalResourceProvider;
 import resourceframework.ResourceProviderException;
 
@@ -31,9 +34,9 @@ public abstract class AbstractLogger {
 	 * Constructs a logger for the logfile "name_date.log".
 	 * 
 	 * @param name
-	 *            The name of the logfile.
+	 *            The name of the logfile. Must not be {@code null}.
 	 */
-	public AbstractLogger(String name) {
+	public AbstractLogger(@Nonnull String name) {
 		this.name = name;
 		try {
 			filePath = (String) GlobalResourceProvider.getInstance().getResource("loggingPath");
@@ -122,10 +125,10 @@ public abstract class AbstractLogger {
 	 * Prints the message to the logfile.
 	 * 
 	 * @param message
-	 *            The message to log.
+	 *            The message to log. Must not be {@code null}.
 	 * @return The logged message will be returned. Used for JUnit testing.
 	 */
-	public String logMessage(String message) {
+	public synchronized String logMessage(@Nonnull String message) {
 		return printToFile(message);
 	}
 
@@ -133,10 +136,10 @@ public abstract class AbstractLogger {
 	 * Prints the stacktrace of the given exception to the logfile.
 	 * 
 	 * @param ex
-	 *            The exception to print.
+	 *            The exception to print. Must not be {@code null}.
 	 * @return The logged message will be returned. Used for JUnit testing.
 	 */
-	public String logException(Exception ex) {
+	public synchronized String logException(@Nonnull Exception ex) {
 		String message = "";
 
 		if (ex.getMessage() != null && !ex.getMessage().isEmpty()) {
@@ -152,12 +155,13 @@ public abstract class AbstractLogger {
 	 * logfile.
 	 * 
 	 * @param message
-	 *            The message to print.
+	 *            The message to print. Must not be {@code null}.
 	 * @param ex
-	 *            The exception to print.
-	 * @return The logged message will be returned. Used for JUnit testing.
+	 *            The exception to print.  Must not be {@code null}.
+	 * @return The logged message will be returned. Used for JUnit testing. 
 	 */
-	public String logMessageAndException(String message, Exception ex) {
+	@Nonnull
+	public synchronized String logMessageAndException(@Nonnull String message, @Nonnull Exception ex) {
 
 		if (ex.getMessage() != null && !ex.getMessage().isEmpty()) {
 			message = message + System.lineSeparator() + ex.getMessage();

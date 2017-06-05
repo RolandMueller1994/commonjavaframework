@@ -50,7 +50,7 @@ public class GlobalResourceProvider {
 	 * @throws ResourceProviderException
 	 *             Exception will be throw if the key is already registed.
 	 */
-	public synchronized void registerResource(String key, Object value)
+	public synchronized void registerResource(@Nonnull String key, @Nonnull Object value)
 			throws ResourceProviderException {
 
 		if (value == null || key == null) {
@@ -78,7 +78,7 @@ public class GlobalResourceProvider {
 	 * @throws ResourceProviderException
 	 *             Will be throw if the given key can't be found.
 	 */
-	public synchronized void changeResource(String key, Object value)
+	public synchronized void changeResource(@Nonnull String key, @Nonnull Object value)
 			throws ResourceProviderException {
 
 		if (key == null || value == null) {
@@ -105,7 +105,8 @@ public class GlobalResourceProvider {
 	 * @throws ResourceProviderException
 	 *             Will be thrown if the key hasn't been registered.
 	 */
-	public synchronized Object getResource(String key) throws ResourceProviderException {
+	@Nonnull
+	public synchronized Object getResource(@Nonnull String key) throws ResourceProviderException {
 
 		if (key == null) {
 			throw new NullPointerException();
@@ -126,7 +127,7 @@ public class GlobalResourceProvider {
 	 * @param key
 	 *            The key to be removed. Must not be {@code null}
 	 */
-	public synchronized void deleteResource(String key) {
+	public synchronized void deleteResource(@Nonnull String key) {
 
 		if (key == null) {
 			throw new NullPointerException();
