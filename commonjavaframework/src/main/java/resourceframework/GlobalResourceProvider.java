@@ -70,7 +70,7 @@ public class GlobalResourceProvider {
 	 * This method is used to change the value for a already registered key.
 	 * 
 	 * @param key
-	 *            {@link Sting} to identify the resource where the value should
+	 *            {@link String} to identify the resource where the value should
 	 *            be changed. A {@link ResourceProviderException} will be throw
 	 *            if the key can't be found. Must not be {@code null}.
 	 * @param value
