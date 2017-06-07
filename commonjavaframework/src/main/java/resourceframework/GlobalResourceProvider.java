@@ -95,6 +95,21 @@ public class GlobalResourceProvider {
 	}
 
 	/**
+	 * Checks if the given key has already been registered.
+	 * 
+	 * @param key
+	 *            The key to check. Must not be {@code null}.
+	 * @return True if the key has been registered, false if not.
+	 */
+	public synchronized boolean checkRegistered(@Nonnull String key) {
+
+		if(key == null) {
+			throw new NullPointerException();
+		}
+		return resources.containsKey(key);
+	}
+
+	/**
 	 * This method is used to get the value for the given key
 	 * 
 	 * @param key

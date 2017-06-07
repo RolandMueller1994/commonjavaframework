@@ -138,4 +138,26 @@ public class GlobalResourceProviderTest {
 		}
 		fail();
 	}
+	
+	@Test
+	public void t12_checkRegisteredTest() {
+		try {
+			GlobalResourceProvider.getInstance().registerResource(TEST_VALUE + "12", TEST_VALUE);
+			assertTrue(GlobalResourceProvider.getInstance().checkRegistered(TEST_VALUE + "12"));
+			assertFalse(GlobalResourceProvider.getInstance().checkRegistered(TEST_VALUE + "13"));
+		} catch (ResourceProviderException e) {
+			fail();
+			e.printStackTrace();
+		}	
+	}
+	
+	@Test
+	public void t13_checkNullKeyTest() {
+		try {
+			GlobalResourceProvider.getInstance().checkRegistered(null);			
+		} catch (NullPointerException ex) {
+			return;
+		}
+		fail();
+	}
 }
