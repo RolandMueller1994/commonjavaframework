@@ -101,8 +101,11 @@ public abstract class AbstractLogger {
 		Date date = new Date(System.currentTimeMillis());
 		SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
 
-		String internalMessage = df.format(date) + System.lineSeparator() + message + System.lineSeparator()
-				+ System.lineSeparator();
+		String internalMessage = df.format(date) + System.lineSeparator() + message;
+
+		System.err.println(internalMessage);
+
+		internalMessage = internalMessage + System.lineSeparator() + System.lineSeparator();
 
 		try {
 			FileWriter writer = new FileWriter(getLogfile(), true);
@@ -117,6 +120,7 @@ public abstract class AbstractLogger {
 			e.printStackTrace();
 			internalMessage = null;
 		}
+
 		return internalMessage;
 	}
 
@@ -156,8 +160,8 @@ public abstract class AbstractLogger {
 	 * @param message
 	 *            The message to print. Must not be {@code null}.
 	 * @param ex
-	 *            The exception to print.  Must not be {@code null}.
-	 * @return The logged message will be returned. Used for JUnit testing. 
+	 *            The exception to print. Must not be {@code null}.
+	 * @return The logged message will be returned. Used for JUnit testing.
 	 */
 	@Nonnull
 	public synchronized String logMessageAndException(@Nonnull String message, @Nonnull Exception ex) {
