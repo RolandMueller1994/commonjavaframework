@@ -149,7 +149,7 @@ public abstract class AbstractLogger {
 			message = ex.getMessage() + System.lineSeparator();
 		}
 
-		message += ex.getStackTrace();
+		message += ex.getStackTrace().toString();
 		return printToFile(message);
 	}
 
@@ -170,7 +170,7 @@ public abstract class AbstractLogger {
 			message = message + System.lineSeparator() + ex.getMessage();
 		}
 
-		message = message + System.lineSeparator() + ex.getStackTrace();
+		message = message + System.lineSeparator() + ex.getStackTrace().toString();
 		return printToFile(message);
 	}
 }
