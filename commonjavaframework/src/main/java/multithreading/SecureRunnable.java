@@ -16,13 +16,17 @@ public abstract class SecureRunnable implements Runnable {
 	public final void run() {
 		try {
 			runSecure();
+		} catch (UncaughtSecureRunnableException ex) {
+			SecureRunnableLogger.getInstance().logMessageAndException(
+					"Uncaught exception has been thrown. Runnable won't be executed another time!", ex);
+			throw ex;
 		} catch (Exception ex) {
 			SecureRunnableLogger.getInstance().logException(ex);
 		}
 	}
 
 	/**
-	 * Abstract method which must be implemented by subclasses. 
+	 * Abstract method which must be implemented by subclasses.
 	 */
 	public abstract void runSecure();
 

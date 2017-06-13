@@ -17,9 +17,9 @@ public class LoggerTest {
 	public void t1_logMessage() {
 		
 		try {
-			String current = new java.io.File( "." ).getCanonicalPath();
-			GlobalResourceProvider.getInstance().registerResource("loggingPath", current);
-			
+			String current = new java.io.File(".").getCanonicalPath();
+			GlobalResourceProvider.getInstance().registerResource("loggingPath", current);			
+		
 			CommonLogger logger = CommonLogger.getInstance();
 			String message = logger.logMessage("TestMessage");
 			logger.logMessage("TestMessage2");
