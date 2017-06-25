@@ -22,7 +22,8 @@ public class ArgParser {
 	 * <br>
 	 * It will be checked if the argument can be represented by either a
 	 * {@link Boolean}, {@link Long} or {@link Double}. If not the given
-	 * {@link String} will be stored. There has to be a value for each key.
+	 * {@link String} will be stored. If there is no value for a key, a boolean
+	 * with value true will be stored.
 	 *
 	 * 
 	 * @param args
@@ -41,9 +42,10 @@ public class ArgParser {
 		for (String arg : argsList) {
 			if (arg.startsWith("--")) {
 				if (wasKey) {
-					throw new Exception("Missing value for key");
+					GlobalResourceProvider.getInstance().registerResource(curKey, new Boolean("true"));
 				}
 				wasKey = true;
+				// Register default true value
 				curKey = arg.substring(2);
 			} else {
 				if (!wasKey) {
@@ -69,8 +71,9 @@ public class ArgParser {
 				GlobalResourceProvider.getInstance().registerResource(curKey, arg);
 			}
 		}
-		if (wasKey) {
-			throw new Exception("Missing value");
+		//Register default value true if last key hasn't got a value
+		if(wasKey) {
+			GlobalResourceProvider.getInstance().registerResource(curKey, new Boolean("true"));
 		}
 	}
 

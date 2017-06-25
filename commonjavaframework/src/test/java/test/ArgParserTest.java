@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import resourceframework.GlobalResourceProvider;
+import resourceframework.ResourceProviderException;
 import startup.ArgParser;
 
 public class ArgParserTest {
@@ -31,16 +32,17 @@ public class ArgParserTest {
 	}
 	
 	@Test
-	public void missingValueTest() {
+	public void missingValueTest() throws ResourceProviderException {
 		String[] stringArray = { "--testKey1", "--testKey2"};
 		try {
 			parser.parse(stringArray);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return;
+			fail();
 		}
-		fail();
+		assertTrue((Boolean) GlobalResourceProvider.getInstance().getResource("testKey1"));
+		assertTrue((Boolean) GlobalResourceProvider.getInstance().getResource("testKey2"));
 	}
 	
 	@Test
@@ -64,9 +66,8 @@ public class ArgParserTest {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return;
+			fail();
 		}
-		fail();
 	}
 	
 	@Test
