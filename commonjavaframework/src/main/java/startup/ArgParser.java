@@ -1,4 +1,4 @@
-package main;
+package startup;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,12 +39,12 @@ public class ArgParser {
 		boolean wasKey = false;
 		String curKey = "";
 		for (String arg : argsList) {
-			if (arg.startsWith("-")) {
+			if (arg.startsWith("--")) {
 				if (wasKey) {
 					throw new Exception("Missing value for key");
 				}
 				wasKey = true;
-				curKey = arg.substring(1);
+				curKey = arg.substring(2);
 			} else {
 				if (!wasKey) {
 					throw new Exception("Missing key for value");

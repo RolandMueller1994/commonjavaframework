@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import main.ArgParser;
 import resourceframework.GlobalResourceProvider;
+import startup.ArgParser;
 
 public class ArgParserTest {
 
