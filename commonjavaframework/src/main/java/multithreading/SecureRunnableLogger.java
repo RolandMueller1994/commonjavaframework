@@ -14,7 +14,7 @@ public class SecureRunnableLogger extends AbstractLogger {
 	
 	/**
 	 * Creates a new logger with the logging directory
-	 * <working_directory>/logging/secure_thread.
+	 * 'working_directory'/logging/secure_thread.
 	 */
 	public SecureRunnableLogger() {
 
