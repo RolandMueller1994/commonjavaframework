@@ -17,11 +17,6 @@ repositories {
     mavenCentral()
 }
 
-allprojects {
-
-version = VERSION_NAME
-group = GROUP
-
 dependencies {
     // This dependency is exported to consumers, that is to say found on their compile classpath.
     api 'org.apache.commons:commons-math3:3.6.1'
@@ -36,13 +31,3 @@ dependencies {
 	compile group: 'com.google.code.findbugs', name: 'jsr305', version: '3.0.2'
     
 }
-
-}
-
-def isReleaseBuild() {
-
-return version.contains("SNAPSHOT") == false
-
-}
-
-apply from: 'https://raw.github.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
