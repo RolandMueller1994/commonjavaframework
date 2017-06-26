@@ -1,0 +1,6 @@
+checktest1 boolean
+checktest2 long
+checktest3 double
+checktest4 string
+checktest5 boolean
+checktest6 boolean
