@@ -138,17 +138,19 @@ public class LanguageResourceHandler {
 				BufferedReader bufReader = new BufferedReader(reader);
 				String line;
 				while ((line = bufReader.readLine()) != null) {
-					if (def) {
-						if(line.contains(".")) {
-							defaultStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));							
+					if(line.contains("=")) {
+						if (def) {
+							if(line.contains(".")) {
+								defaultStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));							
+							} else {
+								globalDefaultStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));
+							}
 						} else {
-							globalDefaultStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));
-						}
-					} else {
-						if(line.contains(".")) {
-							currentStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));							
-						} else {
-							globalCurrentStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));
+							if(line.contains(".")) {
+								currentStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));							
+							} else {
+								globalCurrentStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));
+							}
 						}
 					}
 				}
