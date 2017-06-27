@@ -138,7 +138,7 @@ public class LanguageResourceHandler {
 				BufferedReader bufReader = new BufferedReader(reader);
 				String line;
 				while ((line = bufReader.readLine()) != null) {
-					if(line.contains("=")) {
+					if(!line.isEmpty()) {
 						if (def) {
 							if(line.contains(".")) {
 								defaultStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));							
