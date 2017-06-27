@@ -97,12 +97,12 @@ public class LanguageResourceHandler {
 		String text = currentStrings.get(clazz.getName() + "." + resource);
 		if (text == null && diffLocales) {
 			text = defaultStrings.getOrDefault(clazz.getName() + "." + resource, clazz.getName() + "." + resource);
-		} else {
+		} else if (text == null) {
 			text = clazz.getName() + "." + resource;
 		}
 		return text;
 	}
-	
+
 	/**
 	 * @param resource
 	 * @return
@@ -110,9 +110,9 @@ public class LanguageResourceHandler {
 	@Nonnull
 	public String getLocalizedText(String resource) {
 		String text = globalCurrentStrings.get(resource);
-		if(text == null && diffLocales) {
+		if (text == null && diffLocales) {
 			text = globalDefaultStrings.getOrDefault(resource, resource);
-		} else {
+		} else if (text == null) {
 			text = resource;
 		}
 		return text;
@@ -138,18 +138,22 @@ public class LanguageResourceHandler {
 				BufferedReader bufReader = new BufferedReader(reader);
 				String line;
 				while ((line = bufReader.readLine()) != null) {
-					if(!line.isEmpty()) {
+					if (!line.isEmpty()) {
 						if (def) {
-							if(line.contains(".")) {
-								defaultStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));							
+							if (line.contains(".")) {
+								defaultStrings.put(line.substring(0, line.indexOf("=")),
+										line.substring(line.indexOf("=") + 1));
 							} else {
-								globalDefaultStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));
+								globalDefaultStrings.put(line.substring(0, line.indexOf("=")),
+										line.substring(line.indexOf("=") + 1));
 							}
 						} else {
-							if(line.contains(".")) {
-								currentStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));							
+							if (line.contains(".")) {
+								currentStrings.put(line.substring(0, line.indexOf("=")),
+										line.substring(line.indexOf("=") + 1));
 							} else {
-								globalCurrentStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));
+								globalCurrentStrings.put(line.substring(0, line.indexOf("=")),
+										line.substring(line.indexOf("=") + 1));
 							}
 						}
 					}
