@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -29,6 +30,8 @@ public class LanguageResourceHandler {
 	private boolean diffLocales;
 	private HashMap<String, String> defaultStrings = new HashMap<>();
 	private HashMap<String, String> currentStrings = new HashMap<>();
+	private HashMap<String, String> globalDefaultStrings = new HashMap<>();
+	private HashMap<String, String> globalCurrentStrings = new HashMap<>();
 
 	private LanguageResourceHandler() throws ResourceProviderException {
 		readResource(false);
@@ -93,7 +96,24 @@ public class LanguageResourceHandler {
 	public String getLocalizedText(Class clazz, String resource) {
 		String text = currentStrings.get(clazz.getName() + "." + resource);
 		if (text == null && diffLocales) {
-			return defaultStrings.getOrDefault(clazz.getName() + "." + resource, clazz.getName() + "." + resource);
+			text = defaultStrings.getOrDefault(clazz.getName() + "." + resource, clazz.getName() + "." + resource);
+		} else {
+			text = clazz.getName() + "." + resource;
+		}
+		return text;
+	}
+	
+	/**
+	 * @param resource
+	 * @return
+	 */
+	@Nonnull
+	public String getLocalizedText(String resource) {
+		String text = globalCurrentStrings.get(resource);
+		if(text == null && diffLocales) {
+			text = globalDefaultStrings.getOrDefault(resource, resource);
+		} else {
+			text = resource;
 		}
 		return text;
 	}
@@ -119,9 +139,17 @@ public class LanguageResourceHandler {
 				String line;
 				while ((line = bufReader.readLine()) != null) {
 					if (def) {
-						defaultStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));
+						if(line.contains(".")) {
+							defaultStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));							
+						} else {
+							globalDefaultStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));
+						}
 					} else {
-						currentStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));
+						if(line.contains(".")) {
+							currentStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));							
+						} else {
+							globalCurrentStrings.put(line.substring(0, line.indexOf("=")), line.substring(line.indexOf("=") + 1));
+						}
 					}
 				}
 				bufReader.close();

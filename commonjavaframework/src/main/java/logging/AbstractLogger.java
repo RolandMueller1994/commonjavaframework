@@ -5,6 +5,8 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -149,7 +151,11 @@ public abstract class AbstractLogger {
 			message = ex.getMessage() + System.lineSeparator();
 		}
 
-		message += ex.getStackTrace().toString();
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		ex.printStackTrace(pw);
+		message += sw.toString();
+		
 		return printToFile(message);
 	}
 
@@ -169,8 +175,12 @@ public abstract class AbstractLogger {
 		if (ex.getMessage() != null && !ex.getMessage().isEmpty()) {
 			message = message + System.lineSeparator() + ex.getMessage();
 		}
+		
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		ex.printStackTrace(pw);
 
-		message = message + System.lineSeparator() + ex.getStackTrace().toString();
+		message = message + System.lineSeparator() + sw.toString();
 		return printToFile(message);
 	}
 }
