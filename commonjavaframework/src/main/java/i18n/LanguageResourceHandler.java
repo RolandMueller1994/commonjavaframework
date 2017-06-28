@@ -148,12 +148,12 @@ public class LanguageResourceHandler {
 										line.substring(line.indexOf("=") + 1));
 							}
 						} else {
-							String text = line.substring(line.indexOf("=") + 1);
-							text.replace("\n", System.lineSeparator());
 							if (line.contains(".")) {
-								currentStrings.put(line.substring(0, line.indexOf("=")), text);
+								currentStrings.put(line.substring(0, line.indexOf("=")),
+										line.substring(line.indexOf("=") + 1));
 							} else {
-								globalCurrentStrings.put(line.substring(0, line.indexOf("=")), text);
+								globalCurrentStrings.put(line.substring(0, line.indexOf("=")),
+										line.substring(line.indexOf("=") + 1));
 							}
 						}
 					}
