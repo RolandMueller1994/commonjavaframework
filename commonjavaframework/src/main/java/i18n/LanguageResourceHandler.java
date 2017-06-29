@@ -139,7 +139,7 @@ public class LanguageResourceHandler {
 				String line;
 				while ((line = bufReader.readLine()) != null) {
 					if (!line.isEmpty()) {
-						line.replace("%cr", System.lineSeparator());
+						line = line.replace("%cr", System.lineSeparator());
 						if (def) {
 							if (line.contains(".")) {
 								defaultStrings.put(line.substring(0, line.indexOf("=")),
