@@ -52,7 +52,7 @@ public class LanguageResourceHandler {
 	 *             already been registered at the {@link GlobalResourceProvider}
 	 */
 	@Nonnull
-	public static LanguageResourceHandler getInstance() throws ResourceProviderException {
+	public synchronized static LanguageResourceHandler getInstance() throws ResourceProviderException {
 		if (instance == null) {
 			instance = new LanguageResourceHandler();
 		}
@@ -93,7 +93,7 @@ public class LanguageResourceHandler {
 	 *         dot and the resource string. Never null.
 	 */
 	@Nonnull
-	public String getLocalizedText(Class clazz, String resource) {
+	public synchronized String getLocalizedText(Class clazz, String resource) {
 		String text = currentStrings.get(clazz.getName() + "." + resource);
 		if (text == null && diffLocales) {
 			text = defaultStrings.getOrDefault(clazz.getName() + "." + resource, clazz.getName() + "." + resource);
@@ -108,7 +108,7 @@ public class LanguageResourceHandler {
 	 * @return
 	 */
 	@Nonnull
-	public String getLocalizedText(String resource) {
+	public synchronized String getLocalizedText(String resource) {
 		String text = globalCurrentStrings.get(resource);
 		if (text == null && diffLocales) {
 			text = globalDefaultStrings.getOrDefault(resource, resource);
