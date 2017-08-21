@@ -51,7 +51,7 @@ public class PluginLoader<T extends PluginInterface> {
 	 *             If the path doesn't point to jar file.
 	 */
 	@SuppressWarnings("unchecked")
-	public void registerPlugin(@Nonnull Path pluginPath)
+	public synchronized void registerPlugin(@Nonnull Path pluginPath)
 			throws ClassNotFoundException, IOException, ClassCastException, IllegalArgumentException {
 		File jarFile = new File(pluginPath.toString());
 
@@ -89,7 +89,7 @@ public class PluginLoader<T extends PluginInterface> {
 	 *             If the access to created the new instance isn't granted.
 	 */
 	@CheckForNull
-	public T getPlugin(String name) throws InstantiationException, IllegalAccessException {
+	public synchronized T getPlugin(String name) throws InstantiationException, IllegalAccessException {
 		if(pluginMap.containsKey(name)) {
 			return pluginMap.get(name).newInstance();			
 		}
@@ -102,7 +102,7 @@ public class PluginLoader<T extends PluginInterface> {
 	 * @return a {@link List} of {@link String}s which contains the names. Will not be {@code null}.
 	 */
 	@Nonnull
-	public List<String> getAvailablePlugins() {
+	public synchronized List<String> getAvailablePlugins() {
 		LinkedList<String> retList = new LinkedList<> ();
 		retList.addAll(pluginMap.keySet());
 		return retList;
