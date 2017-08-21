@@ -6,6 +6,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -92,6 +94,18 @@ public class PluginLoader<T extends PluginInterface> {
 			return pluginMap.get(name).newInstance();			
 		}
 		return null;
+	}
+	
+	/**
+	 * Get a list of the plugin names.
+	 * 
+	 * @return a {@link List} of {@link String}s which contains the names. Will not be {@code null}.
+	 */
+	@Nonnull
+	public List<String> getAvailablePlugins() {
+		LinkedList<String> retList = new LinkedList<> ();
+		retList.addAll(pluginMap.keySet());
+		return retList;
 	}
 
 }
