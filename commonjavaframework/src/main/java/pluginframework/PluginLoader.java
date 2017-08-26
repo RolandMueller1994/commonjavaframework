@@ -90,22 +90,33 @@ public class PluginLoader<T extends PluginInterface> {
 	 */
 	@CheckForNull
 	public synchronized T getPlugin(String name) throws InstantiationException, IllegalAccessException {
-		if(pluginMap.containsKey(name)) {
-			return pluginMap.get(name).newInstance();			
+		if (pluginMap.containsKey(name)) {
+			return pluginMap.get(name).newInstance();
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Get a list of the plugin names.
 	 * 
-	 * @return a {@link List} of {@link String}s which contains the names. Will not be {@code null}.
+	 * @return a {@link List} of {@link String}s which contains the names. Will
+	 *         not be {@code null}.
 	 */
 	@Nonnull
 	public synchronized List<String> getAvailablePlugins() {
-		LinkedList<String> retList = new LinkedList<> ();
+		LinkedList<String> retList = new LinkedList<>();
 		retList.addAll(pluginMap.keySet());
 		return retList;
+	}
+
+	/**
+	 * Removes the specified plugin from the plugin loader
+	 * 
+	 * @param name
+	 *            the name of the plugin to remove
+	 */
+	public synchronized void removePlugin(@Nonnull String name) {
+		pluginMap.remove(name);
 	}
 
 }
