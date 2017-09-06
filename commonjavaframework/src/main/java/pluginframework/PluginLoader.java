@@ -29,14 +29,15 @@ import javax.annotation.Nonnull;
  */
 public class PluginLoader<T extends PluginInterface> {
 
-	private HashMap<String, Class<T>> pluginMap = new HashMap<>();
+	private HashMap<String, Class<T>> externalPluginMap = new HashMap<>();
+	private HashMap<String, Class<T>> internalPluginMap = new HashMap<>();
 
 	/**
-	 * This method is used to register plugins. The plugin is searched in the
-	 * path to a given .jar file. The class which should be loaded as plugin has
-	 * to have the same name as the .jar file. The class has to be in a package
-	 * with the same name as the .jar file except that all characters have to be
-	 * lower case.
+	 * This method is used to register external plugins. The plugin is searched
+	 * in the path to a given .jar file. The class which should be loaded as
+	 * plugin has to have the same name as the .jar file. The class has to be in
+	 * a package with the same name as the .jar file except that all characters
+	 * have to be lower case.
 	 * 
 	 * @param pluginPath
 	 *            The path to the .jar file. Must not be {@code null}.
@@ -51,7 +52,7 @@ public class PluginLoader<T extends PluginInterface> {
 	 *             If the path doesn't point to jar file.
 	 */
 	@SuppressWarnings("unchecked")
-	public synchronized void registerPlugin(@Nonnull Path pluginPath)
+	public synchronized void registerExternPlugin(@Nonnull Path pluginPath)
 			throws ClassNotFoundException, IOException, ClassCastException, IllegalArgumentException {
 		File jarFile = new File(pluginPath.toString());
 
@@ -73,8 +74,22 @@ public class PluginLoader<T extends PluginInterface> {
 		// casted
 		Class<T> plugin = (Class<T>) loader.loadClass(name.toLowerCase() + "." + name);
 
-		pluginMap.put(name, plugin);
+		externalPluginMap.put(name, plugin);
 		loader.close();
+	}
+
+	/**
+	 * This method is used to register internal plugins which aren't located in
+	 * a jar file. This plugins have to be part of the code of the project.
+	 * 
+	 * @param name
+	 *            the name of the plugin as {@link String}.
+	 * 
+	 * @param clazz
+	 *            the {@link Class} to register.
+	 */
+	public synchronized void registerInternalPlugin(@Nonnull String name, @Nonnull Class<T> clazz) {
+		internalPluginMap.put(name, clazz);
 	}
 
 	/**
@@ -90,22 +105,40 @@ public class PluginLoader<T extends PluginInterface> {
 	 */
 	@CheckForNull
 	public synchronized T getPlugin(String name) throws InstantiationException, IllegalAccessException {
-		if (pluginMap.containsKey(name)) {
-			return pluginMap.get(name).newInstance();
+		if (externalPluginMap.containsKey(name)) {
+			return externalPluginMap.get(name).newInstance();
+		} else if (internalPluginMap.containsKey(name)) {
+			return internalPluginMap.get(name).newInstance();
 		}
 		return null;
 	}
 
 	/**
-	 * Get a list of the plugin names.
+	 * Get a list of external plugin names.
 	 * 
-	 * @return a {@link List} of {@link String}s which contains the names. Will
-	 *         not be {@code null}.
+	 * @return a {@link List} of {@link String}s which contains the names of all
+	 *         external plugins. Will not be {@code null}.
 	 */
 	@Nonnull
-	public synchronized List<String> getAvailablePlugins() {
+	public synchronized List<String> getAvailableExternPlugins() {
 		LinkedList<String> retList = new LinkedList<>();
-		retList.addAll(pluginMap.keySet());
+		retList.addAll(externalPluginMap.keySet());
+		return retList;
+	}
+
+	/**
+	 * Get a list of all plugin names.
+	 * 
+	 * @return a {@link List} of {@link String}s which contains the names of all
+	 *         plugins. Will not be {@code null}.
+	 */
+	@Nonnull
+	public synchronized List<String> getAllAvailablePlugins() {
+
+		LinkedList<String> retList = new LinkedList<>();
+		retList.addAll(internalPluginMap.keySet());
+		retList.addAll(getAvailableExternPlugins());
+
 		return retList;
 	}
 
@@ -115,8 +148,8 @@ public class PluginLoader<T extends PluginInterface> {
 	 * @param name
 	 *            the name of the plugin to remove
 	 */
-	public synchronized void removePlugin(@Nonnull String name) {
-		pluginMap.remove(name);
+	public synchronized void removeExternalPlugin(@Nonnull String name) {
+		externalPluginMap.remove(name);
 	}
 
 }
