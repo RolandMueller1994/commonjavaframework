@@ -17,13 +17,13 @@ public class DecimalTextField extends TextField {
 	public DecimalTextField() {
 
 		new TextField();
-
+		
 		this.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 
 				// if there is no comma, -1 is returned
-				int i = newValue.indexOf(",");
+				int i = newValue.indexOf(".");
 
 				if (i != -1) {
 					// separate string in integers and decimals
@@ -38,9 +38,28 @@ public class DecimalTextField extends TextField {
 						setText(integerString + decimalString);
 					}
 				} else {
-					setText(newValue.replaceAll("[^\\d,]", ""));
+					setText(newValue.replaceAll("[^\\d.]", ""));
 				}
 			}
 		});
+	}
+	
+	/**
+	 * Sets the value of the property text.
+	 * 
+	 * @param value
+	 *            The value to be set.
+	 */
+	public void setValue(double value) {
+		this.setText(Double.toString(value));
+	}
+	
+	/**
+	 * Gets the value of the property text.
+	 * 
+	 * @return The text of the text field as double.
+	 */
+	public double getValue() {
+		return Double.parseDouble(this.getText());
 	}
 }

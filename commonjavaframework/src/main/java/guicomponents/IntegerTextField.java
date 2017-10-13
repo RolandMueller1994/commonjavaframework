@@ -30,4 +30,23 @@ public class IntegerTextField extends TextField {
 			}
 		});
 	}
+
+	/**
+	 * Sets the value of the property text.
+	 * 
+	 * @param value
+	 *            The value to be set.
+	 */
+	public void setValue(int value) {
+		this.setText(Integer.toString(value));
+	}
+
+	/**
+	 * Gets the value of the property text.
+	 * 
+	 * @return The text of the text field as integer.
+	 */
+	public double getValue() {
+		return Integer.parseInt(this.getText());
+	}
 }
