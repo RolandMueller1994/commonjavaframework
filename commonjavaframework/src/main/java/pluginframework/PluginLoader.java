@@ -152,4 +152,24 @@ public class PluginLoader<T extends PluginInterface> {
 		externalPluginMap.remove(name);
 	}
 
+	/**
+	 * Get a HashMap of all internal plugins.
+	 * 
+	 * @return a {@linkplain HashMap} which contains the name and the class of
+	 *         all internal plugins
+	 */
+	public HashMap<String, Class<T>> getInternalPluginMap() {
+		return internalPluginMap;
+	}
+
+	/**
+	 * Get a HashMap of all external plugins.
+	 * 
+	 * @return a {@linkplain HashMap} which contains the name and the class of
+	 *         all external plugins
+	 */
+	public HashMap<String, Class<T>> getExternalPluginMap() {
+		return externalPluginMap;
+	}
+
 }
