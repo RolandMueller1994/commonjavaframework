@@ -1,1 +1,3 @@
 test.LanguageResourceHandlerTest.testval1=de_testval1
+
+test.LanguageResourceHandlerTest.testval5=de_testval5%v

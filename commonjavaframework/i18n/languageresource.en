@@ -1,1 +1,5 @@
 test.LanguageResourceHandlerTest.testval2=en_testval2
+
+test.LanguageResourceHandlerTest.testval4=en_testval4%v
+
+test.LanguageResourceHandlerTest.testval6=%ven_%vtestval6%v
