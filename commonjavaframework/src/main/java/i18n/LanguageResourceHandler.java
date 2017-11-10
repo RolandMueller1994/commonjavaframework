@@ -118,6 +118,48 @@ public class LanguageResourceHandler {
 		return text;
 	}
 
+	@Nonnull
+	public synchronized String getLocalizedText(Class clazz, String resource, Object... variables)  {
+		String text = this.getLocalizedText(clazz, resource);
+		for (Object var : variables) {
+			try {
+				if (text.indexOf("%v") != -1) {
+					text = text.replaceFirst("%v", String.valueOf(var));
+				} else {// to many input variables
+					return "";
+				}
+			} catch (Exception e) {
+				return "";
+			}
+		}
+		if (text.indexOf("%v") != -1) {// not enough imput variables
+			return "";
+		}
+		return text;
+	}
+	
+	@Nonnull
+	public synchronized String getLocalizedText(String resource, Object... variables) {
+		String text = this.getLocalizedText(resource);
+		for( Object var: variables) {
+			try {
+				if(text.indexOf("%v") != -1) {
+					text = text.replaceFirst("%v", String.valueOf(var));
+				}
+				else {//to many input variables
+					return "";
+				}
+			}
+			catch(Exception e){
+				return "";
+			}
+		}
+		if(text.indexOf("%v")!=-1) {//not enough imput variables
+			return "";
+		}
+		return text;
+	}
+
 	private void readResource(boolean def) throws ResourceProviderException {
 		String path = (String) GlobalResourceProvider.getInstance().getResource("workDir");
 		path = path + File.separator + "i18n";
