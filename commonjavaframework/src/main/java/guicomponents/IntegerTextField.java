@@ -66,7 +66,7 @@ public class IntegerTextField extends TextField {
 	public double getValue() {
 		return Integer.parseInt(this.getText());
 	}
-	
+
 	/**
 	 * Checks if the value is out of the defined limits.
 	 * 
@@ -78,7 +78,7 @@ public class IntegerTextField extends TextField {
 		Integer number = Integer.parseInt(value);
 		if (number != 0) {
 			if (number < minValue) {
-				setText(Integer.toString(minValue));	
+				setText(Integer.toString(minValue));
 				return true;
 			} else if (number > maxValue) {
 				setText(Integer.toString(maxValue));
@@ -90,9 +90,6 @@ public class IntegerTextField extends TextField {
 
 	/**
 	 * Checks the input string for invalid characters and replaces them.
-	 * 
-	 * @param input
-	 *            the string to be evaluated
 	 */
 	public void checkInput(String value) {
 		// \\: Backslash character
