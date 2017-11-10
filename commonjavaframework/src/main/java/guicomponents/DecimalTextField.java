@@ -32,15 +32,17 @@ public class DecimalTextField extends TextField {
 	public DecimalTextField(double minValue, double maxValue) {
 
 		new TextField();
+		this.minValue = minValue;
+		this.maxValue = maxValue;
 
 		this.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-
-				if (numberOutOfLimits(newValue)) {
-					newValue = oldValue;
-				} else {
+				if (!newValue.isEmpty()) {
 					checkInput(newValue);
+					if (!numberOutOfLimits(newValue)) {
+						checkInput(newValue);
+					}
 				}
 			}
 		});
@@ -101,8 +103,14 @@ public class DecimalTextField extends TextField {
 	 */
 	public boolean numberOutOfLimits(String value) {
 		Double number = Double.parseDouble(value);
-		if (number < minValue || number > maxValue) {
-			return true;
+		if (number != 0) {
+			if (number < minValue) {
+				setText(Double.toString(minValue));	
+				return true;
+			} else if (number > maxValue) {
+				setText(Double.toString(maxValue));
+				return true;
+			}
 		}
 		return false;
 	}
