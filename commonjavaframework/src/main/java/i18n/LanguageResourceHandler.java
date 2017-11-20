@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -119,7 +120,7 @@ public class LanguageResourceHandler {
 	}
 
 	@Nonnull
-	public synchronized String getLocalizedText(Class clazz, String resource, Object... variables)  {
+	public synchronized String getLocalizedText(Class clazz, String resource, Object... variables) {
 		String text = this.getLocalizedText(clazz, resource);
 		for (Object var : variables) {
 			try {
@@ -137,24 +138,22 @@ public class LanguageResourceHandler {
 		}
 		return text;
 	}
-	
+
 	@Nonnull
 	public synchronized String getLocalizedText(String resource, Object... variables) {
 		String text = this.getLocalizedText(resource);
-		for( Object var: variables) {
+		for (Object var : variables) {
 			try {
-				if(text.indexOf("%v") != -1) {
+				if (text.indexOf("%v") != -1) {
 					text = text.replaceFirst("%v", String.valueOf(var));
-				}
-				else {//to many input variables
+				} else {// to many input variables
 					return "";
 				}
-			}
-			catch(Exception e){
+			} catch (Exception e) {
 				return "";
 			}
 		}
-		if(text.indexOf("%v")!=-1) {//not enough imput variables
+		if (text.indexOf("%v") != -1) {// not enough imput variables
 			return "";
 		}
 		return text;
@@ -209,5 +208,26 @@ public class LanguageResourceHandler {
 				throw new RuntimeException(e);
 			}
 		}
+	}
+
+	public LinkedList<String> collectAvailableLanguages() throws ResourceProviderException, IOException {
+		LinkedList<String> allLanguages = new LinkedList<>();
+		String path = (String) GlobalResourceProvider.getInstance().getResource("workDir");
+		path = path + File.separator + "i18n";
+		File languageFiles = new File(path);
+		for (File languageFile : languageFiles.listFiles()) {
+			FileReader reader = new FileReader(languageFile);
+			BufferedReader bufReader = new BufferedReader(reader);
+			String language;
+			while ((language = bufReader.readLine()) != null) {
+				if (language.startsWith("language")) {
+					allLanguages.add(language.substring(language.indexOf("=") + 1));
+					break;
+				}
+			}
+			bufReader.close();
+		}
+
+		return allLanguages;
 	}
 }
