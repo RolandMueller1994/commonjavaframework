@@ -6,6 +6,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import resourceframework.GlobalResourceChangedListener;
 import resourceframework.GlobalResourceProvider;
 import resourceframework.ResourceProviderException;
 
@@ -13,6 +14,8 @@ import resourceframework.ResourceProviderException;
 public class GlobalResourceProviderTest {
 
 	private final String  TEST_VALUE= "TestValue";
+	
+	private int count;
 	
 	@Test
 	public void t01_createResourceTest() {
@@ -159,5 +162,30 @@ public class GlobalResourceProviderTest {
 			return;
 		}
 		fail();
+	}
+	
+	@Test
+	public void t14_listenerTest() throws ResourceProviderException {
+		String changeKey = "test_14_key";
+		count = 0;
+		
+		GlobalResourceProvider.getInstance().registerResourceChangedListener(new GlobalResourceChangedListener() {
+			
+			@Override
+			public void resourceChanged(String key, Object newValue, Object oldValue) {
+				
+				if(key.equals(changeKey) && newValue != null) {
+					count++;
+				}
+				
+			}
+		}, changeKey);
+		
+		GlobalResourceProvider.getInstance().registerResource(changeKey, TEST_VALUE + "14.1");
+		GlobalResourceProvider.getInstance().changeResource(changeKey, TEST_VALUE + "14.2");
+		
+		if(count != 2) {
+			fail();
+		}
 	}
 }

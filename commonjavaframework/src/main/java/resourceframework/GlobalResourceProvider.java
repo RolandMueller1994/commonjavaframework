@@ -1,6 +1,7 @@
 package resourceframework;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import javax.annotation.Nonnull;
 
@@ -16,6 +17,8 @@ public class GlobalResourceProvider {
 	private static GlobalResourceProvider instance;
 
 	private static HashMap<String, Object> resources;
+
+	private static HashMap<String, HashSet<GlobalResourceChangedListener>> changeListeners = new HashMap<>();
 
 	/**
 	 * This method is used to get a global instance of this class.
@@ -56,6 +59,8 @@ public class GlobalResourceProvider {
 		if (value == null || key == null) {
 			throw new NullPointerException();
 		}
+		
+		fireResourceChanged(key, value);
 
 		HashMap<String, Object> resources = getResources();
 
@@ -84,6 +89,8 @@ public class GlobalResourceProvider {
 		if (key == null || value == null) {
 			throw new NullPointerException();
 		}
+		
+		fireResourceChanged(key, value);
 
 		HashMap<String, Object> resource = getResources();
 
@@ -103,7 +110,7 @@ public class GlobalResourceProvider {
 	 */
 	public synchronized boolean checkRegistered(@Nonnull String key) {
 
-		if(key == null) {
+		if (key == null) {
 			throw new NullPointerException();
 		}
 		return resources.containsKey(key);
@@ -149,5 +156,38 @@ public class GlobalResourceProvider {
 		}
 
 		getResources().remove(key);
+	}
+
+	/**
+	 * Adds a {@link GlobalResourceChangedListener} to the given key. The
+	 * listener will be called if the value for the key changed or the key gets
+	 * registered.
+	 * 
+	 * @param listener
+	 *            The listener to call. Must not be null.
+	 * @param key
+	 *            The key on which the listener listens. Must not be null.
+	 */
+	public void registerResourceChangedListener(@Nonnull GlobalResourceChangedListener listener, @Nonnull String key) {
+		
+		if(listener == null || key == null) {
+			throw new NullPointerException();
+		}
+		
+		if (!changeListeners.containsKey(key)) {
+			changeListeners.put(key, new HashSet<>());
+		}
+		changeListeners.get(key).add(listener);
+	}
+	
+	private void fireResourceChanged(String key, Object newValue) {
+		
+		if(changeListeners.containsKey(key)) {
+			Object oldValue = getResources().get(key);
+			for(GlobalResourceChangedListener listener : changeListeners.get(key)) {
+				listener.resourceChanged(key, newValue, oldValue);
+			}
+		}
+		
 	}
 }
