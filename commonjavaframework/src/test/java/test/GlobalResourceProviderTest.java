@@ -183,6 +183,7 @@ public class GlobalResourceProviderTest {
 		
 		GlobalResourceProvider.getInstance().registerResource(changeKey, TEST_VALUE + "14.1");
 		GlobalResourceProvider.getInstance().changeResource(changeKey, TEST_VALUE + "14.2");
+		GlobalResourceProvider.getInstance().changeResource(changeKey, TEST_VALUE + "14.2");
 		
 		if(count != 2) {
 			fail();
