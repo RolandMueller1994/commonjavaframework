@@ -216,16 +216,9 @@ public class LanguageResourceHandler {
 		path = path + File.separator + "i18n";
 		File languageFiles = new File(path);
 		for (File languageFile : languageFiles.listFiles()) {
-			FileReader reader = new FileReader(languageFile);
-			BufferedReader bufReader = new BufferedReader(reader);
-			String language;
-			while ((language = bufReader.readLine()) != null) {
-				if (language.startsWith("language")) {
-					allLanguages.add(language.substring(language.indexOf("=") + 1));
-					break;
-				}
-			}
-			bufReader.close();
+			String langString = languageFile.getName().substring(languageFile.getName().indexOf(".") + 1);
+			Locale locale = Locale.forLanguageTag(langString);
+			allLanguages.add(locale.getDisplayName(locale));
 		}
 
 		return allLanguages;
