@@ -184,8 +184,10 @@ public class GlobalResourceProvider {
 		
 		if(changeListeners.containsKey(key)) {
 			Object oldValue = getResources().get(key);
-			for(GlobalResourceChangedListener listener : changeListeners.get(key)) {
-				listener.resourceChanged(key, newValue, oldValue);
+			if(!newValue.equals(oldValue)) {
+				for(GlobalResourceChangedListener listener : changeListeners.get(key)) {
+					listener.resourceChanged(key, newValue, oldValue);
+				}				
 			}
 		}
 		
