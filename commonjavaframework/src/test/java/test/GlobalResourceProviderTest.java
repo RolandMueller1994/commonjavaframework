@@ -62,7 +62,18 @@ public class GlobalResourceProviderTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			fail("Not yet implemented");
-		}	
+		}
+		
+		boolean pass = false;
+		try {
+			GlobalResourceProvider.getInstance().changeResource(TEST_VALUE, new Integer(10));
+		} catch (ResourceProviderException e) {
+			pass = true;
+		}
+		
+		if(!pass) {
+			fail();
+		}
 	}
 	
 	@Test

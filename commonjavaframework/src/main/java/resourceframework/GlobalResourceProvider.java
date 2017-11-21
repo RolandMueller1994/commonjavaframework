@@ -59,7 +59,7 @@ public class GlobalResourceProvider {
 		if (value == null || key == null) {
 			throw new NullPointerException();
 		}
-		
+
 		fireResourceChanged(key, value);
 
 		HashMap<String, Object> resources = getResources();
@@ -89,13 +89,19 @@ public class GlobalResourceProvider {
 		if (key == null || value == null) {
 			throw new NullPointerException();
 		}
-		
+
 		fireResourceChanged(key, value);
 
 		HashMap<String, Object> resource = getResources();
 
 		if (!resource.containsKey(key)) {
 			throw new ResourceProviderException("The key " + key + " can't be found.");
+		}
+
+		if (!resource.get(key).getClass().equals(value.getClass())) {
+			throw new ResourceProviderException(
+					"New value for " + key + " doesn't match the current registered class! Old class: "
+							+ resource.get(key).getClass().toString() + " New class: " + value.getClass().toString());
 		}
 
 		resource.put(key, value);
@@ -169,27 +175,27 @@ public class GlobalResourceProvider {
 	 *            The key on which the listener listens. Must not be null.
 	 */
 	public void registerResourceChangedListener(@Nonnull GlobalResourceChangedListener listener, @Nonnull String key) {
-		
-		if(listener == null || key == null) {
+
+		if (listener == null || key == null) {
 			throw new NullPointerException();
 		}
-		
+
 		if (!changeListeners.containsKey(key)) {
 			changeListeners.put(key, new HashSet<>());
 		}
 		changeListeners.get(key).add(listener);
 	}
-	
+
 	private void fireResourceChanged(String key, Object newValue) {
-		
-		if(changeListeners.containsKey(key)) {
+
+		if (changeListeners.containsKey(key)) {
 			Object oldValue = getResources().get(key);
-			if(!newValue.equals(oldValue)) {
-				for(GlobalResourceChangedListener listener : changeListeners.get(key)) {
+			if (!newValue.equals(oldValue)) {
+				for (GlobalResourceChangedListener listener : changeListeners.get(key)) {
 					listener.resourceChanged(key, newValue, oldValue);
-				}				
+				}
 			}
 		}
-		
+
 	}
 }
