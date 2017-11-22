@@ -14,6 +14,9 @@ import javafx.scene.control.TextField;
  */
 public class IntegerTextField extends TextField {
 
+	int minValue;
+	int maxValue;
+
 	public IntegerTextField() {
 
 		new TextField();
@@ -21,11 +24,25 @@ public class IntegerTextField extends TextField {
 		this.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// \\: Backslash character
-				// \\d -> \d : digit (0...9)
-				if (!newValue.matches("\\d")) {
-					// [^\\d] : any character except digits
-					setText(newValue.replaceAll("[^\\d]", ""));
+				checkInput(newValue);
+			}
+		});
+	}
+
+	public IntegerTextField(int minValue, int maxValue) {
+
+		new TextField();
+		this.minValue = minValue;
+		this.maxValue = maxValue;
+
+		this.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (!newValue.isEmpty()) {
+					checkInput(newValue);
+					if (!numberOutOfLimits(newValue)) {
+						checkInput(newValue);
+					}
 				}
 			}
 		});
@@ -48,5 +65,38 @@ public class IntegerTextField extends TextField {
 	 */
 	public double getValue() {
 		return Integer.parseInt(this.getText());
+	}
+
+	/**
+	 * Checks if the value is out of the defined limits.
+	 * 
+	 * @param value
+	 *            the string to be evaluated
+	 * @return true, if the the value is out of the limits
+	 */
+	public boolean numberOutOfLimits(String value) {
+		Integer number = Integer.parseInt(value);
+		if (number != 0) {
+			if (number < minValue) {
+				setText(Integer.toString(minValue));
+				return true;
+			} else if (number > maxValue) {
+				setText(Integer.toString(maxValue));
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Checks the input string for invalid characters and replaces them.
+	 */
+	public void checkInput(String value) {
+		// \\: Backslash character
+		// \\d -> \d : digit (0...9)
+		if (!value.matches("\\d")) {
+			// [^\\d] : any character except digits
+			setText(value.replaceAll("[^\\d]", ""));
+		}
 	}
 }

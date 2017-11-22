@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -129,7 +130,7 @@ public class LanguageResourceHandler {
 	 * @return text with replacements or empty string.
 	 */
 	@Nonnull
-	private synchronized String getLocalizedTextParser(String text, Object... variables) {
+	public synchronized String getLocalizedTextParser(String text, Object... variables) {
 		for (Object var : variables) {
 			if (text.indexOf("%v") != -1) {
 				text = text.replaceFirst("%v", String.valueOf(var));
@@ -225,5 +226,19 @@ public class LanguageResourceHandler {
 				throw new RuntimeException(e);
 			}
 		}
+	}
+
+	public LinkedList<String> collectAvailableLanguages() throws ResourceProviderException, IOException {
+		LinkedList<String> allLanguages = new LinkedList<>();
+		String path = (String) GlobalResourceProvider.getInstance().getResource("workDir");
+		path = path + File.separator + "i18n";
+		File languageFiles = new File(path);
+		for (File languageFile : languageFiles.listFiles()) {
+			String langString = languageFile.getName().substring(languageFile.getName().indexOf(".") + 1);
+			Locale locale = Locale.forLanguageTag(langString);
+			allLanguages.add(locale.getDisplayName(locale));
+		}
+
+		return allLanguages;
 	}
 }
