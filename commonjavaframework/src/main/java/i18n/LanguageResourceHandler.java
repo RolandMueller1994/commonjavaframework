@@ -48,8 +48,8 @@ public class LanguageResourceHandler {
 	 * 
 	 * @return The singleton instance. Never null.
 	 * @throws ResourceProviderException
-	 *             if the current working directory (key: workDir) hasn't
-	 *             already been registered at the {@link GlobalResourceProvider}
+	 *             if the current working directory (key: workDir) hasn't already
+	 *             been registered at the {@link GlobalResourceProvider}
 	 */
 	@Nonnull
 	public synchronized static LanguageResourceHandler getInstance() throws ResourceProviderException {
@@ -60,8 +60,8 @@ public class LanguageResourceHandler {
 	}
 
 	/**
-	 * Sets the default language for translations. Must be called before
-	 * getInstance is called.
+	 * Sets the default language for translations. Must be called before getInstance
+	 * is called.
 	 * 
 	 * @param locale
 	 *            The default {@link Locale}. Must not be null.
@@ -71,8 +71,8 @@ public class LanguageResourceHandler {
 	}
 
 	/**
-	 * Sets the current language for translations. Must be called before
-	 * getInstance is called.
+	 * Sets the current language for translations. Must be called before getInstance
+	 * is called.
 	 * 
 	 * @param locale
 	 *            The current {@link Locale}. Must not be null.
@@ -89,8 +89,8 @@ public class LanguageResourceHandler {
 	 * @param resource
 	 *            The resource to search. Must not be null.
 	 * @return At first the current translation if present. Then the default
-	 *         translation if present. Else the class.getName() appended by a
-	 *         dot and the resource string. Never null.
+	 *         translation if present. Else the class.getName() appended by a dot
+	 *         and the resource string. Never null.
 	 */
 	@Nonnull
 	public synchronized String getLocalizedText(Class clazz, String resource) {
@@ -118,17 +118,22 @@ public class LanguageResourceHandler {
 		return text;
 	}
 
+	/**
+	 * This method is replacing all keys %v in the input string text with the string
+	 * values of the input variables.
+	 * 
+	 * @param text
+	 *            String with keys %v to replace
+	 * @param variables
+	 *            which string values should be written to the keys.
+	 * @return text with replacements or empty string.
+	 */
 	@Nonnull
-	public synchronized String getLocalizedText(Class clazz, String resource, Object... variables)  {
-		String text = this.getLocalizedText(clazz, resource);
+	private synchronized String getLocalizedTextParser(String text, Object... variables) {
 		for (Object var : variables) {
-			try {
-				if (text.indexOf("%v") != -1) {
-					text = text.replaceFirst("%v", String.valueOf(var));
-				} else {// to many input variables
-					return "";
-				}
-			} catch (Exception e) {
+			if (text.indexOf("%v") != -1) {
+				text = text.replaceFirst("%v", String.valueOf(var));
+			} else {// to many input variables
 				return "";
 			}
 		}
@@ -137,26 +142,37 @@ public class LanguageResourceHandler {
 		}
 		return text;
 	}
-	
+
+	/**
+	 * This method is parsing the text, which is saved in the language file under
+	 * the given resource and clazz, and replaces the keys in the text with the
+	 * string values of the input variables.
+	 * 
+	 * @param clazz
+	 * @param resource
+	 * @param variables
+	 * @return
+	 */
+	@Nonnull
+	public synchronized String getLocalizedText(Class clazz, String resource, Object... variables) {
+		String text = this.getLocalizedText(clazz, resource);
+		text = getLocalizedTextParser(text, variables);
+		return text;
+	}
+
+	/**
+	 * This method is parsing the text, which is saved in the language file under
+	 * the given resource, and replaces the keys in the text with the string values
+	 * of the input variables.
+	 * 
+	 * @param resource
+	 * @param variables
+	 * @return
+	 */
 	@Nonnull
 	public synchronized String getLocalizedText(String resource, Object... variables) {
 		String text = this.getLocalizedText(resource);
-		for( Object var: variables) {
-			try {
-				if(text.indexOf("%v") != -1) {
-					text = text.replaceFirst("%v", String.valueOf(var));
-				}
-				else {//to many input variables
-					return "";
-				}
-			}
-			catch(Exception e){
-				return "";
-			}
-		}
-		if(text.indexOf("%v")!=-1) {//not enough imput variables
-			return "";
-		}
+		text = getLocalizedTextParser(text, variables);
 		return text;
 	}
 
