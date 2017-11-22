@@ -34,8 +34,8 @@ public class ConfigFileHandler {
 	 * already existing config file and try's to load it if it matches the given
 	 * parameters (only type not value). If there is not config file a new one
 	 * will be written. If the config file is corrupted a new file will be
-	 * written. <br/>
-	 * <br/>
+	 * written. <br>
+	 * <br>
 	 * Parameters will be registered at the {@link GlobalResourceProvider}. If
 	 * the value changes in {@link GlobalResourceProvider} it will be
 	 * automatically written to the config file.
