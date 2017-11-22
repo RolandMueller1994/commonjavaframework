@@ -119,7 +119,7 @@ public class GlobalResourceProvider {
 		if (key == null) {
 			throw new NullPointerException();
 		}
-		return resources.containsKey(key);
+		return getResources().containsKey(key);
 	}
 
 	/**
