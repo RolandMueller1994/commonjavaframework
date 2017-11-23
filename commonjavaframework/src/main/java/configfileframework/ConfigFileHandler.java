@@ -126,14 +126,15 @@ public class ConfigFileHandler {
 			while ((line = bufReader.readLine()) != null) {
 				if (!line.isEmpty()) {
 
+					if(line.startsWith("#")) {
+						continue;
+					}
+
 					if (!line.contains("=")) {
 						retMap.clear();
 						return retMap;
 					}
 					
-					if(line.startsWith("#")) {
-						continue;
-					}
 
 					String parameter = line.substring(0, line.indexOf("="));
 					String value = line.substring(line.indexOf("=") + 1);
