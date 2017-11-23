@@ -24,8 +24,8 @@ public class ConfigFileHandler {
 	private GlobalResourceProvider resProv = GlobalResourceProvider.getInstance();
 	private ConfigFileValueChangedListener valueChangedListener;
 
-	private HashMap<String, Object> checkedParameters;
-	private HashMap<String, Object> inputParameters;
+	private HashMap<String, ConfigFileValueWrapper> checkedParameters;
+	private HashMap<String, ConfigFileValueWrapper> inputParameters;
 
 	private String filePath;
 
@@ -56,10 +56,11 @@ public class ConfigFileHandler {
 	 *             {@link String}, {@link Double}, {@link Long} or
 	 *             {@link Boolean}.
 	 */
-	public ConfigFileHandler(String configName, HashMap<String, Object> parameters)
+	public ConfigFileHandler(String configName, HashMap<String, ConfigFileValueWrapper> parameters)
 			throws ResourceProviderException, ConfigFileHandlerException {
 
-		for (Object value : parameters.values()) {
+		for (ConfigFileValueWrapper valueWrapper : parameters.values()) {
+			Object value = valueWrapper.getValue();
 			if (!(value instanceof Double) && !(value instanceof Long) && !(value instanceof Boolean)
 					&& !(value instanceof String)) {
 				throw new ConfigFileHandlerException(
@@ -90,7 +91,7 @@ public class ConfigFileHandler {
 
 			if (configFiles.length == 1) {
 				File configFile = configFiles[0];
-				HashMap<String, String> fileParameters = readFile(configFile);
+				HashMap<String, ConfigFileValueWrapper> fileParameters = readFile(configFile);
 				try {
 					checkedParameters = checkAgainstParameters(parameters, fileParameters);
 				} catch (ConfigFileHandlerException ex) {
@@ -113,9 +114,9 @@ public class ConfigFileHandler {
 		registerResources();
 	}
 
-	private HashMap<String, String> readFile(File file) {
+	private HashMap<String, ConfigFileValueWrapper> readFile(File file) {
 
-		HashMap<String, String> retMap = new HashMap<>();
+		HashMap<String, ConfigFileValueWrapper> retMap = new HashMap<>();
 
 		FileReader reader;
 		try {
@@ -129,6 +130,10 @@ public class ConfigFileHandler {
 						retMap.clear();
 						return retMap;
 					}
+					
+					if(line.startsWith("#")) {
+						continue;
+					}
 
 					String parameter = line.substring(0, line.indexOf("="));
 					String value = line.substring(line.indexOf("=") + 1);
@@ -138,7 +143,7 @@ public class ConfigFileHandler {
 						return retMap;
 					}
 
-					retMap.put(parameter, value);
+					retMap.put(parameter, new ConfigFileValueWrapper(value, null));
 				}
 			}
 			bufReader.close();
@@ -160,8 +165,15 @@ public class ConfigFileHandler {
 			FileWriter writer = new FileWriter(configFile);
 
 			for (String param : inputParameters.keySet()) {
-				Object value = checkedParameters.get(param);
-				writer.append(param + "=" + value.toString() + System.lineSeparator());
+				ConfigFileValueWrapper valueWrapper = checkedParameters.get(param);
+				Object value = valueWrapper.getValue();
+				String comment = valueWrapper.getComment();
+				if(comment != null && comment.length() > 0) {
+					comment = "#" + comment;
+					comment = comment.replace("%cr", System.lineSeparator() + "#");
+					writer.append(comment + System.lineSeparator());					
+				}
+				writer.append(param + "=" + value.toString() + System.lineSeparator() + System.lineSeparator());
 			}
 
 			writer.close();
@@ -170,39 +182,42 @@ public class ConfigFileHandler {
 		}
 	}
 
-	private HashMap<String, Object> checkAgainstParameters(HashMap<String, Object> parameters,
-			HashMap<String, String> fileParameters) throws ConfigFileHandlerException {
+	private HashMap<String, ConfigFileValueWrapper> checkAgainstParameters(HashMap<String, ConfigFileValueWrapper> parameters,
+			HashMap<String, ConfigFileValueWrapper> fileParameters) throws ConfigFileHandlerException {
 
-		HashMap<String, Object> retMap = new HashMap<>();
+		HashMap<String, ConfigFileValueWrapper> retMap = new HashMap<>();
 
 		for (String fileParameter : fileParameters.keySet()) {
 			if (parameters.containsKey(fileParameter)) {
-				Object param = parameters.get(fileParameter);
-				String fileParam = fileParameters.get(fileParameter);
+				ConfigFileValueWrapper paramWrapper = parameters.get(fileParameter);
+				Object param = paramWrapper.getValue();
+				String comment = paramWrapper.getComment();
+				ConfigFileValueWrapper fileParamWrapper = fileParameters.get(fileParameter);
+				String fileParam = (String) fileParamWrapper.getValue();
 				if (param instanceof Long) {
 					try {
 						Long fileIntParam = new Long(fileParam);
-						retMap.put(fileParameter, fileIntParam);
+						retMap.put(fileParameter, new ConfigFileValueWrapper(fileIntParam, comment));
 					} catch (NumberFormatException ex) {
 						throw new ConfigFileHandlerException("File config wrong!");
 					}
 				} else if (param instanceof Double) {
 					try {
 						Double fileDoubleParam = new Double(fileParam);
-						retMap.put(fileParameter, fileDoubleParam);
+						retMap.put(fileParameter, new ConfigFileValueWrapper(fileDoubleParam, comment));
 					} catch (NumberFormatException ex) {
 						throw new ConfigFileHandlerException("File config wrong!");
 					}
 				} else if (param instanceof Boolean) {
 					if (fileParam.equals("true")) {
-						retMap.put(fileParameter, new Boolean(true));
+						retMap.put(fileParameter, new ConfigFileValueWrapper(new Boolean(true), comment));
 					} else if (fileParam.equals("false")) {
-						retMap.put(fileParameter, new Boolean(true));
+						retMap.put(fileParameter, new ConfigFileValueWrapper(new Boolean(false), comment));
 					} else {
 						throw new ConfigFileHandlerException("File config wrong!");
 					}
 				} else if (param instanceof String) {
-					retMap.put(fileParameter, fileParam);
+					retMap.put(fileParameter, new ConfigFileValueWrapper(fileParam, comment));
 				} else {
 					throw new ConfigFileHandlerException("File config wrong!");
 				}
@@ -226,7 +241,7 @@ public class ConfigFileHandler {
 
 		for (String param : checkedParameters.keySet()) {
 			try {
-				resProv.registerResource(param, checkedParameters.get(param));
+				resProv.registerResource(param, checkedParameters.get(param).getValue());
 				resProv.registerResourceChangedListener(valueChangedListener, param);
 			} catch (ResourceProviderException e) {
 				throw new ConfigFileHandlerException("Couldn't register parameter!");
@@ -240,7 +255,8 @@ public class ConfigFileHandler {
 		public void resourceChanged(String key, Object newValue, Object oldValue) {
 
 			if (checkedParameters.containsKey(key)) {
-				checkedParameters.put(key, newValue);
+				String comment = checkedParameters.get(key).getComment();
+				checkedParameters.put(key, new ConfigFileValueWrapper(newValue, comment));
 				try {
 					writeFile();
 				} catch (ConfigFileHandlerException e) {

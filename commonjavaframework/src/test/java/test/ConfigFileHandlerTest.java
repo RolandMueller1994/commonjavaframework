@@ -14,6 +14,7 @@ import com.google.common.io.Files;
 
 import configfileframework.ConfigFileHandler;
 import configfileframework.ConfigFileHandlerException;
+import configfileframework.ConfigFileValueWrapper;
 import resourceframework.GlobalResourceProvider;
 import resourceframework.ResourceProviderException;
 
@@ -38,11 +39,11 @@ public class ConfigFileHandlerTest {
 			}
 		}
 
-		HashMap<String, Object> params = new HashMap<>();
-		params.put("testParamBol", new Boolean(true));
-		params.put("testParamLong", new Long(10));
-		params.put("testParamDouble", new Double(1.23));
-		params.put("testParamString", "TestString");
+		HashMap<String, ConfigFileValueWrapper> params = new HashMap<>();
+		params.put("testParamBol", new ConfigFileValueWrapper(new Boolean(true), "This is a comment%crwith multiple lines"));
+		params.put("testParamLong", new ConfigFileValueWrapper(new Long(10), null));
+		params.put("testParamDouble", new ConfigFileValueWrapper(new Double(1.23), null));
+		params.put("testParamString", new ConfigFileValueWrapper("TestString", null));
 		configHandler = new ConfigFileHandler("testConfig", params);
 
 		File tmp = new File(GlobalResourceProvider.getInstance().getResource("workDir") + File.separator + ".config"
@@ -58,11 +59,11 @@ public class ConfigFileHandlerTest {
 	@Test
 	public void t02_read_file_test() throws ResourceProviderException, ConfigFileHandlerException {
 		
-		HashMap<String, Object> params = new HashMap<>();
-		params.put("testParamBol2", new Boolean(false));
-		params.put("testParamLong2", new Long(10));
-		params.put("testParamDouble2", new Double(1.23));
-		params.put("testParamString2", "TestString");
+		HashMap<String, ConfigFileValueWrapper> params = new HashMap<>();
+		params.put("testParamBol2", new ConfigFileValueWrapper(new Boolean(false), null));
+		params.put("testParamLong2", new ConfigFileValueWrapper(new Long(10), null));
+		params.put("testParamDouble2", new ConfigFileValueWrapper(new Double(1.23), null));
+		params.put("testParamString2", new ConfigFileValueWrapper("TestString", null));
 		configHandler = new ConfigFileHandler("testConfig2", params);
 		
 		GlobalResourceProvider resProv = GlobalResourceProvider.getInstance();
