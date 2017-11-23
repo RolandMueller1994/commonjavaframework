@@ -229,6 +229,7 @@ public class LanguageResourceHandler {
 		}
 	}
 
+	
 	public List<Locale> collectAvailableLanguages() throws ResourceProviderException, IOException {
 		List<Locale> allLanguages = new LinkedList<>();
 		String path = (String) GlobalResourceProvider.getInstance().getResource("workDir");
