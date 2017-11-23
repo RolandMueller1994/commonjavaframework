@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.Nonnull;
@@ -228,15 +229,15 @@ public class LanguageResourceHandler {
 		}
 	}
 
-	public LinkedList<String> collectAvailableLanguages() throws ResourceProviderException, IOException {
-		LinkedList<String> allLanguages = new LinkedList<>();
+	public List<Locale> collectAvailableLanguages() throws ResourceProviderException, IOException {
+		List<Locale> allLanguages = new LinkedList<>();
 		String path = (String) GlobalResourceProvider.getInstance().getResource("workDir");
 		path = path + File.separator + "i18n";
 		File languageFiles = new File(path);
 		for (File languageFile : languageFiles.listFiles()) {
 			String langString = languageFile.getName().substring(languageFile.getName().indexOf(".") + 1);
 			Locale locale = Locale.forLanguageTag(langString);
-			allLanguages.add(locale.getDisplayName(locale));
+			allLanguages.add(locale);
 		}
 
 		return allLanguages;
