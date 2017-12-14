@@ -16,7 +16,8 @@ import javafx.scene.input.KeyEvent;
  * 
  * @author roland
  *
- * @param <T> the data type which should be handled
+ * @param <T>
+ *            the data type which should be handled
  */
 public abstract class AbstractNumberTextField<T extends Number> extends TextField {
 
@@ -56,7 +57,9 @@ public abstract class AbstractNumberTextField<T extends Number> extends TextFiel
 
 	/**
 	 * Set the value of the text field
-	 * @param value the new value.
+	 * 
+	 * @param value
+	 *            the new value.
 	 */
 	public void setValue(T value) {
 		this.value = checkValue(value);
@@ -74,6 +77,7 @@ public abstract class AbstractNumberTextField<T extends Number> extends TextFiel
 
 	/**
 	 * Get the value which is currently valid.
+	 * 
 	 * @return the valid value.
 	 */
 	public T getValue() {
@@ -82,7 +86,9 @@ public abstract class AbstractNumberTextField<T extends Number> extends TextFiel
 
 	/**
 	 * Registered listeners will be called if the valid value changes.
-	 * @param listener the {@link ValueChangedInterface} to call.
+	 * 
+	 * @param listener
+	 *            the {@link ValueChangedInterface} to call.
 	 */
 	public void registerValueChangedListener(ValueChangedInterface listener) {
 		listeners.add(listener);
@@ -90,7 +96,9 @@ public abstract class AbstractNumberTextField<T extends Number> extends TextFiel
 
 	/**
 	 * Remove a listener
-	 * @param listener the {@link ValueChangedInterface} to remove.
+	 * 
+	 * @param listener
+	 *            the {@link ValueChangedInterface} to remove.
 	 */
 	public void removeValueChangedListener(ValueChangedInterface listener) {
 		listeners.remove(listener);
@@ -106,8 +114,22 @@ public abstract class AbstractNumberTextField<T extends Number> extends TextFiel
 
 	protected abstract T parseInput(String input);
 
+	/**
+	 * Listener which will be called if the valid value of
+	 * {@link AbstractNumberTextField} changed.
+	 * 
+	 * @author roland
+	 *
+	 */
 	public interface ValueChangedInterface {
 
+		/**
+		 * Called if valid value changed.
+		 * 
+		 * @param value
+		 *            the new value as {@link Number}. Must be casted to the
+		 *            generic type of text field.
+		 */
 		public void valueChanged(Number value);
 
 	}
