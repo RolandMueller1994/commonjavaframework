@@ -19,8 +19,6 @@ public class DecimalTextField extends TextField {
 
 	public DecimalTextField() {
 
-		new TextField();
-
 		this.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
@@ -31,7 +29,6 @@ public class DecimalTextField extends TextField {
 
 	public DecimalTextField(double minValue, double maxValue) {
 
-		new TextField();
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 
