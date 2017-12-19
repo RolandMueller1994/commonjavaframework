@@ -7,7 +7,7 @@ public class DoubleTextField extends AbstractNumberTextField<Double> {
 	}
 
 	public DoubleTextField(Double value) {
-		super(value, Double.MAX_VALUE, Double.MAX_VALUE);
+		super(value, Double.MIN_VALUE, Double.MAX_VALUE);
 	}
 
 	@Override
