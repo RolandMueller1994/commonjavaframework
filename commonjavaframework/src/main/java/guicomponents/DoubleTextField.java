@@ -1,7 +1,8 @@
 package guicomponents;
 
 /**
- * Textfield for double values
+ * Textfield for double values.
+ * 
  * @author roland
  *
  */
@@ -17,16 +18,16 @@ public class DoubleTextField extends AbstractNumberTextField<Double> {
 
 	@Override
 	protected String checkInput(String input) {
-		
+
 		String sign = "";
-		
-		if(input.indexOf("-") == 0) {
+
+		if (input.indexOf("-") == 0) {
 			input = input.substring(1);
 			sign = "-";
-		} else if(input.indexOf("+") == 0) {
+		} else if (input.indexOf("+") == 0) {
 			input = input.substring(1);
 		}
-		
+
 		// if there is no comma, -1 is returned
 		int i = input.indexOf(".");
 
@@ -45,7 +46,7 @@ public class DoubleTextField extends AbstractNumberTextField<Double> {
 				// [^\\d] : any character except digits
 				integerString = integerString.replaceAll("[^\\d]", "");
 			}
-			
+
 			return sign + integerString + "." + decimalString;
 		} else {
 			return sign + input.replaceAll("[^\\d.]", "");
@@ -54,9 +55,8 @@ public class DoubleTextField extends AbstractNumberTextField<Double> {
 
 	@Override
 	protected Double parseInput(String input) {
-		
+
 		return new Double(input);
 	}
-	
-	
+
 }
