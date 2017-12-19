@@ -45,20 +45,16 @@ public abstract class AbstractNumberTextField<T extends Number> extends TextFiel
 			@Override
 			public void handle(KeyEvent key) {
 				if (key.getCode().equals(KeyCode.ENTER)) {
-					confirmInput();
+					if (!getText().isEmpty()) {
+						setValue(parseInput(getText()));
+						fireValueChanged();
+						setStyle("-fx-text-fill: black");
+					}
 				}
 			}
 		});
 	}
 	
-	private void confirmInput() {
-		if (!getText().isEmpty()) {
-			setValue(parseInput(getText()));
-			fireValueChanged();
-			setStyle("-fx-text-fill: black");
-		}
-	}
-
 	/**
 	 * Set the value of the text field
 	 * 
@@ -68,7 +64,8 @@ public abstract class AbstractNumberTextField<T extends Number> extends TextFiel
 	public void setValue(T value) {
 		this.value = checkValue(value);
 		setText(this.value.toString());
-		confirmInput();
+		fireValueChanged();
+		setStyle("-fx-text-fill: black");
 	}
 
 	private T checkValue(T value) {
