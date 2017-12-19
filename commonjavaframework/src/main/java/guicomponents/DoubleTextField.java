@@ -1,5 +1,10 @@
 package guicomponents;
 
+/**
+ * Textfield for double values
+ * @author roland
+ *
+ */
 public class DoubleTextField extends AbstractNumberTextField<Double> {
 
 	public DoubleTextField(Double value, Double minValue, Double maxValue) {
