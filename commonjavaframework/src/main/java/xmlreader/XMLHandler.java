@@ -101,4 +101,8 @@ public class XMLHandler {
 		
 		return xmlElement;
 	}	
+	
+	public XMLElement getRootElement() {
+		return rootElement;
+	}
 }
