@@ -1,5 +1,6 @@
 package xmlreader;
 
+
 public class XMLAttribute {
 	
 	private String id;
