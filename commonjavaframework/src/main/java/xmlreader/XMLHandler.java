@@ -37,6 +37,10 @@ public class XMLHandler {
 		rootElement = parseElement(docElem);
 	}
 	
+	public XMLHandler(XMLElement root) {
+		rootElement = root;
+	}
+	
 	public void rewriteXMLFile() {
 		writeToNewFile(path);
 	}
