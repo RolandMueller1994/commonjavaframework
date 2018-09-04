@@ -46,6 +46,14 @@ public class XMLElement {
 		return textContent;
 	}
 	
+	public String getTag() {
+		return tag;
+	}
+	
+	public void setTag(String tag) {
+		this.tag = tag;
+	}
+	
 	public String parse(int level) {
 		String tabString = "";
 		for(int i=0; i<level; i++) {
